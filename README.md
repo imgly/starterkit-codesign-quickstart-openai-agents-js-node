@@ -1,10 +1,17 @@
-# Quickstart: OpenAI Agents SDK — a CoDesign starter kit
+<p align="center">
+  <img src=".github/assets/header.png" width="1280" alt="Design agent on the OpenAI Agents SDK: a text brief goes in, a finished design comes out as design.png and design.imgly">
+</p>
 
-Type a brief, and a design agent on the OpenAI Agents SDK designs it with
-CoDesign's tools and hands you a PNG and an editable design.
+# OpenAI Agents SDK Design Agent — a CoDesign SDK Quickstart
+
+A Node.js starter kit that runs a design agent on the OpenAI Agents SDK: type
+a brief, and the agent designs it with IMG.LY's CoDesign SDK and hands you a
+PNG and an editable design. It is for engineers who want to add AI design
+generation to their product with the OpenAI Agents SDK.
 
 **Documentation:**
-[Quickstart: OpenAI Agents SDK](https://img.ly/docs/cesdk/codesign/starter-kits/quickstart-openai-agents-cdsqoa/)
+[Quickstart: OpenAI Agents SDK](https://img.ly/docs/cesdk/codesign/starter-kits/quickstart-openai-agents-cdsqoa/) ·
+**The same quickstart on:** [Vercel AI SDK](https://github.com/imgly/starterkit-codesign-quickstart-ai-sdk-js-node) · [LangChain.js](https://github.com/imgly/starterkit-codesign-quickstart-langchain-js-node) · [Mastra](https://github.com/imgly/starterkit-codesign-quickstart-mastra-js-node) · [pi](https://github.com/imgly/starterkit-codesign-quickstart-pi-js-node) · [Claude Agent SDK](https://github.com/imgly/starterkit-codesign-quickstart-claude-agent-sdk-js-node)
 
 Terms used below: **CE.SDK** is IMG.LY's design engine and editor. A
 **design** is a CE.SDK scene, saved as an `.imgly` file. The **CoDesign SDK**
@@ -13,6 +20,17 @@ and export designs. The **executor** is where those tools run a CE.SDK engine:
 here IMG.LY's `imgly/codesign-executor` Docker image on your machine. The
 **gateway** is IMG.LY's AI gateway, which forwards model calls to the model
 provider and charges them to your IMG.LY account.
+
+## What You Get
+
+- One script, `design.mjs`, that hands CoDesign's design tools to
+  the OpenAI Agents SDK and runs the agent on your brief.
+- Two files per run: `out/design.png`, and `out/design.imgly`, the editable
+  design with its images and fonts.
+- The design engine as IMG.LY's `imgly/codesign-executor` Docker image,
+  started with `npm run executor`.
+- The model through IMG.LY's AI gateway, paid with the same CoDesign license
+  key: no account with a model provider.
 
 ## What's Inside
 
@@ -25,8 +43,8 @@ tsconfig.json   # `npm run check` type-checks design.mjs
 
 ## Run It
 
-You need Docker, Node.js 22 or newer, and a **CoDesign license key** from
-IMG.LY ([contact sales](https://img.ly/forms/contact-sales/)). That one key
+You need Docker, Node.js 22 or newer, and a **CoDesign license key**.
+[Contact sales](https://img.ly/forms/contact-sales/) to get a CoDesign license key. That one key
 starts the design engine, pays for each exported file, and pays for the model
 through the gateway. You need no account with a model provider.
 
@@ -119,10 +137,27 @@ about a run goes to OpenAI.
 | `The run failed after … s: 402 …`                           | The account behind the key is out of credits (`insufficient_credits`).                                                                                           |
 | `The model stopped early`                                   | The model reached the 60-turn limit; nothing was exported.                                                                                                       |
 
+## FAQ
+
+### Which models can it use?
+
+Any model IMG.LY's AI gateway serves: set `MODEL` in `.env` to one of the ids
+at `https://gateway.img.ly/v1/models`. The default is
+`@openrouter/anthropic/claude-opus-5`.
+
+### Do I need an account with a model provider?
+
+No. Your CoDesign license key pays for the model through the gateway.
+
+### Can a person keep editing the design?
+
+Yes. `out/design.imgly` opens in a CE.SDK editor of exactly the version the
+executor runs, which the SDK exports as `CESDK_VERSION`.
+
 ## License
 
 This kit is licensed under IMG.LY's license; see `LICENSE.md`. Using the CoDesign
-SDK and the executor needs a CoDesign license key from IMG.LY.
+SDK and the executor needs a CoDesign license key. [Contact sales](https://img.ly/forms/contact-sales/) to get a CoDesign license key.
 
 ---
 
