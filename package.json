@@ -1,13 +1,13 @@
 {
-  "name": "@imgly/demo-quickstart-openai-agents",
+  "name": "starterkit-codesign-quickstart-openai-agents-js-node",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "description": "A CoDesign SDK starter kit: a design agent on the OpenAI Agents SDK turns a brief into a PNG and an editable design, with the executor in Docker on your machine.",
   "scripts": {
     "start": "node --env-file=.env design.mjs",
-    "executor": "docker run -d --name codesign-executor --restart always -p 127.0.0.1:8080:8080 --env-file .env --tmpfs /var/lib/codesign-executor:uid=1000 imgly/codesign-executor:1.83.0",
-    "executor:stop": "docker rm -f codesign-executor",
+    "executor": "docker rm -f codesign-executor-openai-agents >/dev/null 2>&1; docker run -d --name codesign-executor-openai-agents --restart always -p 127.0.0.1:8080:8080 --env-file .env --tmpfs /var/lib/codesign-executor:uid=1000 imgly/codesign-executor:1.83.0",
+    "executor:stop": "docker rm -f codesign-executor-openai-agents",
     "check": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
