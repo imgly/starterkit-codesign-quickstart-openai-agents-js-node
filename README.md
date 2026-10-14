@@ -118,12 +118,12 @@ about a run goes to OpenAI.
 
 ## Variables
 
-| Variable              | What it is                                                                                                                |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `IMGLY_CESDK_LICENSE` | Your CoDesign license key. The executor uses it for the engine and exports, the script for the model.                     |
-| `EXECUTOR_TOKEN`      | A secret the executor and the script share. A different one gets 401.                                                     |
-| `MODEL`               | Optional. Default `@openrouter/anthropic/claude-opus-5`. The gateway lists its ids at `https://gateway.img.ly/v1/models`. |
-| `EXECUTOR_URL`        | Optional. Default `http://localhost:8080`.                                                                                |
+| Variable              | What it is                                                                                                                                                                                                                                                                                                                  |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `IMGLY_CESDK_LICENSE` | Your CoDesign license key. The executor uses it for the engine and exports, the script for the model.                                                                                                                                                                                                                       |
+| `EXECUTOR_TOKEN`      | A secret the executor and the script share. A different one gets 401.                                                                                                                                                                                                                                                       |
+| `MODEL`               | Optional. Default `@openrouter/anthropic/claude-opus-5`. Any model OpenRouter serves works as `@openrouter/` and its OpenRouter id, such as `@openrouter/anthropic/claude-haiku-5.5`. The gateway lists its own ids with your key: `curl -H "Authorization: Bearer $IMGLY_CESDK_LICENSE" https://gateway.img.ly/v1/models`. |
+| `EXECUTOR_URL`        | Optional. Default `http://localhost:8080`.                                                                                                                                                                                                                                                                                  |
 
 ## Troubleshooting
 
@@ -135,7 +135,7 @@ about a run goes to OpenAI.
 | `missing or wrong executor token`                           | The executor answered 401 with another token: after changing `EXECUTOR_TOKEN`, run `npm run executor:stop` and `npm run executor` again so the executor gets it. |
 | `… the executor at … is unreachable`                        | The executor is not running or restarting: check `curl http://localhost:8080/health`.                                                                            |
 | `The run failed after … s: 402 …`                           | The account behind the key is out of credits (`insufficient_credits`).                                                                                           |
-| `The model stopped early`                                   | The model reached the 60-turn limit; nothing was exported.                                                                                                       |
+| `The model stopped early`                                   | The model reached the 60-turn limit; no PNG was exported, and the design so far is in `out/design.imgly`.                                                        |
 
 ## FAQ
 

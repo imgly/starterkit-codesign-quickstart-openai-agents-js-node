@@ -73,7 +73,12 @@ const tools = codesign.tools.map((t) =>
       ),
     strict: false,
     execute: async (args, _context, details) => {
-      const result = await t.call(args ?? {}, { signal: details?.signal });
+      const result = await t
+        .call(args ?? {}, { signal: details?.signal })
+        .catch((err) => {
+          console.log(`✗ ${t.name} (${err.kind ?? err.name})`); // rejected: the executor or your store failed
+          throw err;
+        });
       console.log(`${result.isError ? '✗' : '✓'} ${t.name}`);
       if (result.isError) return textOf(result.content); // the refusal, in words the model can act on
       return result.content.map((p) =>
@@ -152,6 +157,26 @@ const runner = new Runner({
   tracingDisabled: true // the Agents SDK would otherwise send a trace of every run to OpenAI
 });
 
+/** A failure in one line: the SDK error's kind and the first line of its message, not a stack or a request body. */
+const cause = (err) =>
+  `${err?.kind ? `${err.kind}: ` : ''}${String(err instanceof Error ? err.message : err).split('\n')[0]}`;
+
+// The free .imgly first: when the billed PNG export fails, or the run ends early, the design the model made is kept.
+async function save(withPNG) {
+  let file = 'out/design.imgly';
+  try {
+    await mkdir('out', { recursive: true });
+    await writeFile(file, await codesign.export('imgly'));
+    if (!withPNG) return console.error(`Wrote ${file}, the design so far.`);
+    file = 'out/design.png';
+    await writeFile(file, await codesign.export('png'));
+    console.log('Wrote out/design.png and out/design.imgly');
+  } catch (err) {
+    console.error(`Could not write ${file}: ${cause(err)}`);
+    process.exitCode = 1;
+  }
+}
+
 const started = Date.now();
 const seconds = () => Math.round((Date.now() - started) / 1000);
 try {
@@ -161,20 +186,16 @@ try {
   console.log(
     `${run.rawResponses.length} steps, ${seconds()} s, ${inputTokens} input / ${outputTokens} output tokens`
   );
-  await mkdir('out', { recursive: true });
-  await writeFile('out/design.png', await codesign.export('png'));
-  await writeFile('out/design.imgly', await codesign.export('imgly'));
-  console.log('Wrote out/design.png and out/design.imgly');
+  await save(true);
 } catch (err) {
   // The Agents SDK's errors carry the whole run's state; its message is enough.
   const what =
     err instanceof MaxTurnsExceededError
       ? 'The model stopped early'
       : 'The run failed';
-  console.error(
-    `${what} after ${seconds()} s: ${err instanceof Error ? err.message : err}; nothing exported.`
-  );
+  console.error(`${what} after ${seconds()} s: ${cause(err)}`);
   process.exitCode = 1;
+  await save(false);
 } finally {
   await codesign.release(); // ends the design's session now; the engine closes about 30 s later
 }
